@@ -10,33 +10,271 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ManualRouteImport } from './routes/manual'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
+import { Route as CompanyAboutRouteImport } from './routes/company.about'
+import { Route as CompanyCareersRouteImport } from './routes/company.careers'
+import { Route as CompanyPressRouteImport } from './routes/company.press'
+import { Route as CompanyResearchRouteImport } from './routes/company.research'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
+import { Route as ProductBrixPhRouteImport } from './routes/product.brix-ph'
+import { Route as ProductCropHealthRouteImport } from './routes/product.crop-health'
+import { Route as ProductSeedQualityRouteImport } from './routes/product.seed-quality'
+import { Route as ProductSoilDiagnosticsRouteImport } from './routes/product.soil-diagnostics'
+import { Route as SupportApiRouteImport } from './routes/support.api'
+import { Route as SupportContactRouteImport } from './routes/support.contact'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyzeRoute = AnalyzeRouteImport.update({
+  id: '/analyze',
+  path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManualRoute = ManualRouteImport.update({
+  id: '/manual',
+  path: '/manual',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
+  id: '/api/analyze',
+  path: '/api/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyAboutRoute = CompanyAboutRouteImport.update({
+  id: '/company/about',
+  path: '/company/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyCareersRoute = CompanyCareersRouteImport.update({
+  id: '/company/careers',
+  path: '/company/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyPressRoute = CompanyPressRouteImport.update({
+  id: '/company/press',
+  path: '/company/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyResearchRoute = CompanyResearchRouteImport.update({
+  id: '/company/research',
+  path: '/company/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductBrixPhRoute = ProductBrixPhRouteImport.update({
+  id: '/product/brix-ph',
+  path: '/product/brix-ph',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductCropHealthRoute = ProductCropHealthRouteImport.update({
+  id: '/product/crop-health',
+  path: '/product/crop-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductSeedQualityRoute = ProductSeedQualityRouteImport.update({
+  id: '/product/seed-quality',
+  path: '/product/seed-quality',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductSoilDiagnosticsRoute = ProductSoilDiagnosticsRouteImport.update({
+  id: '/product/soil-diagnostics',
+  path: '/product/soil-diagnostics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportApiRoute = SupportApiRouteImport.update({
+  id: '/support/api',
+  path: '/support/api',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportContactRoute = SupportContactRouteImport.update({
+  id: '/support/contact',
+  path: '/support/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/manual': typeof ManualRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/analyze': typeof ApiAnalyzeRoute
+  '/company/about': typeof CompanyAboutRoute
+  '/company/careers': typeof CompanyCareersRoute
+  '/company/press': typeof CompanyPressRoute
+  '/company/research': typeof CompanyResearchRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/product/brix-ph': typeof ProductBrixPhRoute
+  '/product/crop-health': typeof ProductCropHealthRoute
+  '/product/seed-quality': typeof ProductSeedQualityRoute
+  '/product/soil-diagnostics': typeof ProductSoilDiagnosticsRoute
+  '/support/api': typeof SupportApiRoute
+  '/support/contact': typeof SupportContactRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/manual': typeof ManualRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/analyze': typeof ApiAnalyzeRoute
+  '/company/about': typeof CompanyAboutRoute
+  '/company/careers': typeof CompanyCareersRoute
+  '/company/press': typeof CompanyPressRoute
+  '/company/research': typeof CompanyResearchRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/product/brix-ph': typeof ProductBrixPhRoute
+  '/product/crop-health': typeof ProductCropHealthRoute
+  '/product/seed-quality': typeof ProductSeedQualityRoute
+  '/product/soil-diagnostics': typeof ProductSoilDiagnosticsRoute
+  '/support/api': typeof SupportApiRoute
+  '/support/contact': typeof SupportContactRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/manual': typeof ManualRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/analyze': typeof ApiAnalyzeRoute
+  '/company/about': typeof CompanyAboutRoute
+  '/company/careers': typeof CompanyCareersRoute
+  '/company/press': typeof CompanyPressRoute
+  '/company/research': typeof CompanyResearchRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/product/brix-ph': typeof ProductBrixPhRoute
+  '/product/crop-health': typeof ProductCropHealthRoute
+  '/product/seed-quality': typeof ProductSeedQualityRoute
+  '/product/soil-diagnostics': typeof ProductSoilDiagnosticsRoute
+  '/support/api': typeof SupportApiRoute
+  '/support/contact': typeof SupportContactRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/manual'
+    | '/reset-password'
+    | '/api/analyze'
+    | '/company/about'
+    | '/company/careers'
+    | '/company/press'
+    | '/company/research'
+    | '/legal/privacy'
+    | '/legal/terms'
+    | '/product/brix-ph'
+    | '/product/crop-health'
+    | '/product/seed-quality'
+    | '/product/soil-diagnostics'
+    | '/support/api'
+    | '/support/contact'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/manual'
+    | '/reset-password'
+    | '/api/analyze'
+    | '/company/about'
+    | '/company/careers'
+    | '/company/press'
+    | '/company/research'
+    | '/legal/privacy'
+    | '/legal/terms'
+    | '/product/brix-ph'
+    | '/product/crop-health'
+    | '/product/seed-quality'
+    | '/product/soil-diagnostics'
+    | '/support/api'
+    | '/support/contact'
+  id:
+    | '__root__'
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/dashboard'
+    | '/manual'
+    | '/reset-password'
+    | '/api/analyze'
+    | '/company/about'
+    | '/company/careers'
+    | '/company/press'
+    | '/company/research'
+    | '/legal/privacy'
+    | '/legal/terms'
+    | '/product/brix-ph'
+    | '/product/crop-health'
+    | '/product/seed-quality'
+    | '/product/soil-diagnostics'
+    | '/support/api'
+    | '/support/contact'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyzeRoute: typeof AnalyzeRoute
+  AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
+  ManualRoute: typeof ManualRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiAnalyzeRoute: typeof ApiAnalyzeRoute
+  CompanyAboutRoute: typeof CompanyAboutRoute
+  CompanyCareersRoute: typeof CompanyCareersRoute
+  CompanyPressRoute: typeof CompanyPressRoute
+  CompanyResearchRoute: typeof CompanyResearchRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+  ProductBrixPhRoute: typeof ProductBrixPhRoute
+  ProductCropHealthRoute: typeof ProductCropHealthRoute
+  ProductSeedQualityRoute: typeof ProductSeedQualityRoute
+  ProductSoilDiagnosticsRoute: typeof ProductSoilDiagnosticsRoute
+  SupportApiRoute: typeof SupportApiRoute
+  SupportContactRoute: typeof SupportContactRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +286,155 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analyze': {
+      id: '/analyze'
+      path: '/analyze'
+      fullPath: '/analyze'
+      preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manual': {
+      id: '/manual'
+      path: '/manual'
+      fullPath: '/manual'
+      preLoaderRoute: typeof ManualRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/analyze': {
+      id: '/api/analyze'
+      path: '/api/analyze'
+      fullPath: '/api/analyze'
+      preLoaderRoute: typeof ApiAnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company/about': {
+      id: '/company/about'
+      path: '/company/about'
+      fullPath: '/company/about'
+      preLoaderRoute: typeof CompanyAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company/careers': {
+      id: '/company/careers'
+      path: '/company/careers'
+      fullPath: '/company/careers'
+      preLoaderRoute: typeof CompanyCareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company/press': {
+      id: '/company/press'
+      path: '/company/press'
+      fullPath: '/company/press'
+      preLoaderRoute: typeof CompanyPressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company/research': {
+      id: '/company/research'
+      path: '/company/research'
+      fullPath: '/company/research'
+      preLoaderRoute: typeof CompanyResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/brix-ph': {
+      id: '/product/brix-ph'
+      path: '/product/brix-ph'
+      fullPath: '/product/brix-ph'
+      preLoaderRoute: typeof ProductBrixPhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/crop-health': {
+      id: '/product/crop-health'
+      path: '/product/crop-health'
+      fullPath: '/product/crop-health'
+      preLoaderRoute: typeof ProductCropHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/seed-quality': {
+      id: '/product/seed-quality'
+      path: '/product/seed-quality'
+      fullPath: '/product/seed-quality'
+      preLoaderRoute: typeof ProductSeedQualityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/soil-diagnostics': {
+      id: '/product/soil-diagnostics'
+      path: '/product/soil-diagnostics'
+      fullPath: '/product/soil-diagnostics'
+      preLoaderRoute: typeof ProductSoilDiagnosticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support/api': {
+      id: '/support/api'
+      path: '/support/api'
+      fullPath: '/support/api'
+      preLoaderRoute: typeof SupportApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support/contact': {
+      id: '/support/contact'
+      path: '/support/contact'
+      fullPath: '/support/contact'
+      preLoaderRoute: typeof SupportContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyzeRoute: AnalyzeRoute,
+  AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
+  ManualRoute: ManualRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  ApiAnalyzeRoute: ApiAnalyzeRoute,
+  CompanyAboutRoute: CompanyAboutRoute,
+  CompanyCareersRoute: CompanyCareersRoute,
+  CompanyPressRoute: CompanyPressRoute,
+  CompanyResearchRoute: CompanyResearchRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
+  ProductBrixPhRoute: ProductBrixPhRoute,
+  ProductCropHealthRoute: ProductCropHealthRoute,
+  ProductSeedQualityRoute: ProductSeedQualityRoute,
+  ProductSoilDiagnosticsRoute: ProductSoilDiagnosticsRoute,
+  SupportApiRoute: SupportApiRoute,
+  SupportContactRoute: SupportContactRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
