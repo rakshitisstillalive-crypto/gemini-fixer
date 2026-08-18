@@ -2,15 +2,16 @@ import type { AnalysisReport } from "@/lib/analysis-types";
 import { SYSTEM_PROMPT } from "@/lib/analysis-prompt";
 
 /**
- * Model candidates, tried in order. Override with the GEMINI_MODEL env var.
- * If Google retires one, the next is tried automatically instead of hard-failing.
+ * OpenAI vision models, tried in order. Override with the OPENAI_MODEL env var.
+ * If one is unavailable for the key, the next is tried automatically.
  */
-const GOOGLE_MODELS = [
-  process.env["GEMINI_MODEL"]?.trim(),
-  "gemini-flash-latest",
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
+const OPENAI_MODELS = [
+  process.env["OPENAI_MODEL"]?.trim(),
+  "gpt-4o-mini",
+  "gpt-4o",
 ].filter(Boolean) as string[];
+
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
 const GATEWAY_MODEL = "google/gemini-2.5-flash";
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
@@ -55,58 +56,59 @@ function buildUserText(note?: string) {
     : "Analyse this sample and return the JSON report.";
 }
 
-/** One attempt against a specific Google model. */
-async function callGoogleModel(
-  model: string,
-  apiKey: string,
-  mimeType: string,
-  base64: string,
-  note?: string,
-) {
-  return fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+function buildMessages(imageDataUrl: string, note?: string) {
+  return [
+    { role: "system", content: SYSTEM_PROMPT },
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: buildUserText(note) }, { inlineData: { mimeType, data: base64 } }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          responseMimeType: "application/json",
-        },
-      }),
+      role: "user",
+      content: [
+        { type: "text", text: buildUserText(note) },
+        { type: "image_url", image_url: { url: imageDataUrl } },
+      ],
     },
-  );
+  ];
 }
 
-/** Direct Google Generative Language API call (used when hosting outside Lovable, e.g. Netlify). */
-async function analyzeWithGoogleKey(
+/** One attempt against a specific OpenAI model. */
+async function callOpenAiModel(
+  model: string,
+  apiKey: string,
+  imageDataUrl: string,
+  note?: string,
+) {
+  return fetch(OPENAI_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.4,
+      response_format: { type: "json_object" },
+      messages: buildMessages(imageDataUrl, note),
+    }),
+  });
+}
+
+/** Direct OpenAI API call (used when hosting outside Lovable, e.g. Netlify). */
+async function analyzeWithOpenAiKey(
   rawKey: string,
   imageDataUrl: string,
   note?: string,
 ): Promise<AnalysisReport> {
   const apiKey = rawKey.trim();
-  const match = /^data:([^;,]+);base64,(.+)$/i.exec(imageDataUrl.trim());
-  if (!match) throw new AnalysisError("Please upload a valid image file.", 400);
-  const [, mimeType, base64] = match;
-
   let lastMessage = "";
   let lastStatus = 502;
 
-  for (const model of GOOGLE_MODELS) {
-    const response = await callGoogleModel(model, apiKey, mimeType!, base64!, note);
+  for (const model of OPENAI_MODELS) {
+    const response = await callOpenAiModel(model, apiKey, imageDataUrl, note);
 
     if (response.ok) {
       const payload = (await response.json()) as {
-        candidates?: { content?: { parts?: { text?: string }[] } }[];
+        choices?: { message?: { content?: string } }[];
       };
-      const raw = payload.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+      const raw = payload.choices?.[0]?.message?.content ?? "";
       if (!raw) throw new AnalysisError("The analysis engine returned an empty report.", 502);
       return extractReport(raw);
     }
@@ -118,55 +120,54 @@ async function analyzeWithGoogleKey(
     } catch {
       providerMessage = body.slice(0, 300);
     }
-    console.error("Google AI error", model, response.status, providerMessage);
+    console.error("OpenAI error", model, response.status, providerMessage);
     lastMessage = providerMessage;
     lastStatus = response.status;
 
-    // Model retired / unavailable / not found for this key -> try the next candidate.
+    // Model not available for this key/project -> try the next candidate.
     const modelProblem =
       response.status === 404 ||
-      /no longer available|not found|not supported|is not available/i.test(providerMessage);
+      /does not exist|do not have access|not found|unsupported model|deprecated/i.test(providerMessage);
     if (modelProblem) continue;
 
     if (response.status === 429) {
-      throw new AnalysisError(providerMessage || "Too many requests — please try again shortly.", 429);
+      throw new AnalysisError(
+        providerMessage || "Too many requests or quota exceeded — please try again shortly.",
+        429,
+      );
     }
     if (response.status === 401 || response.status === 403) {
       throw new AnalysisError(
-        providerMessage || "The configured GEMINI_API_KEY was rejected by Google AI Studio.",
+        providerMessage || "The configured OPENAI_API_KEY was rejected by OpenAI.",
         403,
       );
     }
     if (response.status === 400) {
       throw new AnalysisError(
-        providerMessage || "Google rejected the request. Check the image and API key restrictions.",
+        providerMessage || "OpenAI rejected the request. Check the image size and format.",
         400,
       );
     }
     throw new AnalysisError(
-      providerMessage || "Google's analysis service is temporarily unavailable.",
+      providerMessage || "OpenAI's service is temporarily unavailable.",
       response.status >= 500 ? 503 : 502,
     );
   }
 
   throw new AnalysisError(
-    lastMessage || "No supported Gemini model is available for this API key.",
+    lastMessage || "No supported OpenAI vision model is available for this API key.",
     lastStatus >= 500 ? 503 : 502,
   );
 }
 
 /** Runs the vision analysis and returns a structured report. */
 export async function analyzeWithGemini(input: AnalyzeRequest): Promise<AnalysisReport> {
-  const googleKey = (
-    process.env["GEMINI_API_KEY"] ??
-    process.env["GOOGLE_API_KEY"] ??
-    process.env["GOOGLE_GENERATIVE_AI_API_KEY"]
-  )?.trim();
+  const openAiKey = process.env["OPENAI_API_KEY"]?.trim();
   const lovableKey = process.env["LOVABLE_API_KEY"]?.trim();
 
-  if (!googleKey && !lovableKey) {
+  if (!openAiKey && !lovableKey) {
     throw new AnalysisError(
-      "AI is not configured. Add GEMINI_API_KEY in Netlify → Site settings → Environment variables, then redeploy.",
+      "AI is not configured. Add OPENAI_API_KEY in Netlify → Site settings → Environment variables, then redeploy.",
       500,
     );
   }
@@ -177,9 +178,9 @@ export async function analyzeWithGemini(input: AnalyzeRequest): Promise<Analysis
   assertDataUrl(input.imageDataUrl);
   const note = typeof input.note === "string" ? input.note.slice(0, 500) : undefined;
 
-  // Your own Google key takes priority — this is what runs on Netlify.
-  if (googleKey) {
-    return analyzeWithGoogleKey(googleKey, input.imageDataUrl, note);
+  // Your own OpenAI key takes priority — this is what runs on Netlify.
+  if (openAiKey) {
+    return analyzeWithOpenAiKey(openAiKey, input.imageDataUrl, note);
   }
 
   const response = await fetch(GATEWAY_URL, {
@@ -192,16 +193,7 @@ export async function analyzeWithGemini(input: AnalyzeRequest): Promise<Analysis
       model: GATEWAY_MODEL,
       temperature: 0.4,
       response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: buildUserText(note) },
-            { type: "image_url", image_url: { url: input.imageDataUrl } },
-          ],
-        },
-      ],
+      messages: buildMessages(input.imageDataUrl, note),
     }),
   });
 
